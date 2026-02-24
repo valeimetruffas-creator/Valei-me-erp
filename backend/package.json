@@ -6,6 +6,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "node --watch src/server.js",
+    "build": "node -e \"console.log('backend build: no compile step')\"",
     "start": "node src/server.js",
     "worker": "node worker.js",
     "lint": "eslint .",
