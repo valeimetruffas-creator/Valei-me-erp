@@ -1,0 +1,59 @@
+# → Logs e Debug
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# → Dependências
+node_modules/
+
+# → Builds e Distribuições
+dist/
+dist-ssr/
+build/
+out/
+
+# → Arquivos temporários de pacotes
+*.tgz
+*.tar.gz
+.pnp.*
+.pnpm-debug.log*
+
+# → Arquivos locais e env
+.env
+.env.*          # .env.local, .env.production, etc.
+*.local         # config.local, etc.
+
+# → Cache de Ferramentas
+.cache/
+.vite/
+.next/          # Se algum dia migrar para Next.js
+.eslintcache
+coverage/
+.nyc_output/
+
+# → Editor de Código e IDEs
+.vscode/*
+!.vscode/extensions.json # mantém recomendação de extensões
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# → Arquivos do sistema operacional
+.DS_Store       # macOS
+Thumbs.db       # Windows
+ehthumbs.db     # Windows
+Icon?           # macOS
+*.orig          # arquivos gerados por merge
+*.bak
+*.tmp
+
+# → Histórico do vite dev server
+vite.config.ts.timestamp
+
+/src/generated/prisma

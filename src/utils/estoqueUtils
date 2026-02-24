@@ -1,0 +1,80 @@
+// src/utils/estoqueUtils.ts
+
+export type Insumo = {
+  id: string;
+  nome: string;
+  precoPorKg: number;
+  quantidade: number;
+};
+
+export type Estoque = {
+  [id: string]: Insumo;
+};
+
+/**
+ * Adiciona um insumo ao estoque
+ */
+export const adicionarInsumo = (
+  estoque: Estoque,
+  insumo: Insumo
+): Estoque => {
+  return {
+    ...estoque,
+    [insumo.id]: insumo,
+  };
+};
+
+/**
+ * Atualiza quantidade de um insumo
+ */
+export const atualizarQuantidade = (
+  estoque: Estoque,
+  id: string,
+  novaQuantidade: number
+): Estoque => {
+  if (!estoque[id]) return estoque;
+  return {
+    ...estoque,
+    [id]: {
+      ...estoque[id],
+      quantidade: novaQuantidade,
+    },
+  };
+};
+
+/**
+ * Atualiza preço de compra de um insumo
+ */
+export const atualizarPreco = (
+  estoque: Estoque,
+  id: string,
+  novoPreco: number
+): Estoque => {
+  if (!estoque[id]) return estoque;
+  return {
+    ...estoque,
+    [id]: {
+      ...estoque[id],
+      precoPorKg: novoPreco,
+    },
+  };
+};
+
+/**
+ * Remove um insumo do estoque
+ */
+export const removerInsumo = (estoque: Estoque, id: string): Estoque => {
+  const novoEstoque = { ...estoque };
+  delete novoEstoque[id];
+  return novoEstoque;
+};
+
+/**
+ * Calcula valor total do estoque
+ */
+export const calcularValorTotal = (estoque: Estoque): number => {
+  return Object.values(estoque).reduce(
+    (acc, insumo) => acc + insumo.precoPorKg * (insumo.quantidade / 1000),
+    0
+  );
+};

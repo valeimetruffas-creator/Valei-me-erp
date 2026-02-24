@@ -1,0 +1,12 @@
+[
+  {
+    "id": "bolo-chocolate",
+    "nome": "Bolo de Chocolate",
+    "rendimento": 10,
+    "insumos": [
+      { "id": "farinha", "nome": "Farinha de Trigo", "quantidade": 500, "unidade": "g" },
+      { "id": "acucar", "nome": "Açúcar", "quantidade": 300, "unidade": "g" },
+      { "id": "ovos", "nome": "Ovos", "quantidade": 5, "unidade": "un" }
+    ]
+  }
+]

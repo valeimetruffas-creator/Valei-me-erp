@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 30 55% 30%;           /* #784E23 marrom */
+    --foreground: 38 90% 89%;           /* #FDEDD2 creme */
+
+    --card: 40 55% 58%;                 /* #CDA85B dourado */
+    --card-foreground: 30 55% 30%;      /* marrom (texto do card) */
+
+    --popover: 38 90% 89%;              /* creme */
+    --popover-foreground: 30 55% 30%;   /* marrom */
+
+    --primary: 40 55% 58%;              /* dourado */
+    --primary-foreground: 30 55% 30%;   /* marrom */
+
+    --secondary: 67 29% 33%;            /* #676C3C verde oliva escuro */
+    --secondary-foreground: 38 90% 89%; /* creme */
+
+    --muted: 38 90% 89%;                /* creme claro */
+    --muted-foreground: 67 29% 33%;     /* verde escuro */
+
+    --accent: 67 29% 33%;               /* verde oliva */
+    --accent-foreground: 38 90% 89%;    /* creme */
+
+    --destructive: 0 84% 60%;           /* vermelho */
+    --destructive-foreground: 38 90% 89%; /* creme */
+
+    --border: 67 29% 33%;               /* verde oliva */
+    --input: 38 90% 89%;                /* creme */
+    --ring: 40 55% 58%;                 /* dourado */
+    --radius: 0.5rem;
+  }
+}
+
+.dark {
+  --background: 30 55% 20%;
+  --foreground: 38 90% 89%;
+
+  --card: 40 55% 58%;
+  --card-foreground: 30 55% 30%;
+
+  --popover: 30 55% 20%;
+  --popover-foreground: 38 90% 89%;
+
+  --primary: 40 55% 58%;
+  --primary-foreground: 30 55% 30%;
+
+  --secondary: 67 29% 33%;
+  --secondary-foreground: 38 90% 89%;
+
+  --muted: 30 55% 20%;
+  --muted-foreground: 38 90% 89%;
+
+  --accent: 67 29% 33%;
+  --accent-foreground: 38 90% 89%;
+
+  --destructive: 0 84% 50%;
+  --destructive-foreground: 38 90% 89%;
+
+  --border: 67 29% 33%;
+  --input: 30 55% 25%;
+  --ring: 40 55% 58%;
+}
+
+  
+

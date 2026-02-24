@@ -1,0 +1,179 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function userDoc() {
+      return get(/databases/$(database)/documents/usuarios/$(request.auth.uid));
+    }
+
+    function userExists() {
+      return isAuthenticated()
+        && exists(/databases/$(database)/documents/usuarios/$(request.auth.uid));
+    }
+
+    function userEmpresaId() {
+      return userDoc().data.empresaId;
+    }
+
+    function isTenant(empresaId) {
+      return userExists() && userEmpresaId() == empresaId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.admin == true
+        || (userExists() && userDoc().data.role in ["admin", "Admin", "ADMIN", "administrador", "Administrador", "ADMINISTRADOR"])
+      );
+    }
+
+    function isAtendente() {
+      return userExists() && userDoc().data.role in ["atendente", "Atendente", "ATENDENTE"];
+    }
+
+    function isCozinha() {
+      return userExists() && userDoc().data.role in ["cozinha", "Cozinha", "COZINHA"];
+    }
+
+    function isOperacao() {
+      return isAdmin() || isAtendente() || isCozinha();
+    }
+
+    function sameEmpresaFromResource() {
+      return userExists()
+        && resource.data.keys().hasAll(["empresaId"])
+        && resource.data.empresaId == userEmpresaId();
+    }
+
+    function sameEmpresaFromRequest() {
+      return userExists()
+        && request.resource.data.keys().hasAll(["empresaId"])
+        && request.resource.data.empresaId == userEmpresaId();
+    }
+
+    function isClientePedidoDelivery() {
+      return isAuthenticated()
+        && resource.data.origem == "delivery"
+        && resource.data.clienteUid == request.auth.uid;
+    }
+
+    match /empresas/{empresaId} {
+      allow read: if isTenant(empresaId) || isAdmin();
+      allow create: if isAuthenticated() && (
+        isAdmin() || request.resource.data.ownerUid == request.auth.uid
+      );
+      allow update: if isTenant(empresaId) && isAdmin();
+      allow delete: if isTenant(empresaId) && isAdmin();
+    }
+
+    match /usuarios/{userId} {
+      allow read: if isAuthenticated() && (
+        request.auth.uid == userId
+        || (isAdmin() && sameEmpresaFromResource())
+      );
+      allow create: if isAuthenticated() && request.auth.uid == userId && sameEmpresaFromRequest();
+      allow update: if isAuthenticated() && (
+        (isAdmin() && sameEmpresaFromRequest())
+        || (
+          request.auth.uid == userId
+          && request.resource.data.role == resource.data.role
+          && request.resource.data.empresaId == resource.data.empresaId
+        )
+      );
+      allow delete: if isAdmin() && sameEmpresaFromResource();
+    }
+
+    match /confeitaria/{empresaId} {
+      allow read: if isTenant(empresaId) && isOperacao();
+      allow write: if isTenant(empresaId) && isAdmin();
+    }
+
+    match /financeiro/{empresaId} {
+      allow read: if isTenant(empresaId) && isAdmin();
+      allow write: if isTenant(empresaId) && isAdmin();
+    }
+
+    match /estoque/{empresaId} {
+      allow read: if isTenant(empresaId) && isOperacao();
+      allow write: if isTenant(empresaId) && isAdmin();
+    }
+
+    match /produtos/{docId} {
+      allow read: if (sameEmpresaFromResource() && isOperacao()) || resource.data.ativo == true;
+      allow write: if sameEmpresaFromRequest() && isAdmin();
+    }
+
+    match /vendas/{docId} {
+      allow read: if sameEmpresaFromResource() && isOperacao();
+      allow write: if sameEmpresaFromRequest() && isAdmin();
+    }
+
+    match /insumos/{docId} {
+      allow read: if sameEmpresaFromResource() && isOperacao();
+      allow write: if sameEmpresaFromRequest() && isAdmin();
+    }
+
+    match /fichatecnica/{docId} {
+      allow read: if sameEmpresaFromResource() && isOperacao();
+      allow write: if sameEmpresaFromRequest() && isAdmin();
+    }
+
+    match /producao/{docId} {
+      allow read: if sameEmpresaFromResource() && isOperacao();
+      allow write: if sameEmpresaFromRequest() && isAdmin();
+    }
+
+    match /categorias/{docId} {
+      allow read: if sameEmpresaFromResource() && isOperacao();
+      allow write: if sameEmpresaFromRequest() && isAdmin();
+    }
+
+    match /configuracoes/{docId} {
+      allow read: if sameEmpresaFromResource() && isOperacao();
+      allow write: if sameEmpresaFromRequest() && isAdmin();
+    }
+
+    match /integracoes/{docId} {
+      allow read: if sameEmpresaFromResource() && isOperacao();
+      allow write: if sameEmpresaFromRequest() && isAdmin();
+    }
+
+    match /entregas/{docId} {
+      allow read: if sameEmpresaFromResource() && isOperacao();
+      allow write: if sameEmpresaFromRequest() && isAdmin();
+    }
+
+    match /automacoes/{docId} {
+      allow read: if sameEmpresaFromResource() && isOperacao();
+      allow write: if sameEmpresaFromRequest() && isAdmin();
+    }
+
+    match /pedidos/{docId} {
+      allow read: if (sameEmpresaFromResource() && isOperacao()) || isClientePedidoDelivery();
+      allow write: if sameEmpresaFromRequest() && isAdmin();
+    }
+
+    match /filaCozinha/{docId} {
+      allow read: if sameEmpresaFromResource() && isOperacao();
+      allow write: if sameEmpresaFromRequest() && isAdmin();
+    }
+
+    match /logsIntegracao/{docId} {
+      allow read: if sameEmpresaFromResource() && isAdmin();
+      allow write: if false;
+    }
+
+    match /logsSistema/{docId} {
+      allow read: if sameEmpresaFromResource() && isAdmin();
+      allow write: if false;
+    }
+
+    match /produtosNaoMapeados/{docId} {
+      allow read: if sameEmpresaFromResource() && isOperacao();
+      allow write: if sameEmpresaFromRequest() && isAdmin();
+    }
+  }
+}
